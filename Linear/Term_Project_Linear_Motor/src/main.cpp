@@ -15,7 +15,6 @@ const int           mqttPort = 1883;
 WiFiClient espClient;
 PubSubClient client(espClient);
 void callback(char* topic, byte* payload, unsigned int length);
-void pubStatus();
 
 void setup() {
     Serial.begin(115200);
@@ -47,11 +46,9 @@ void setup() {
     digitalWrite(M_IN2, !motorA_vector);    // IN2번에 LOW(motorA_vector가 0이면 HIGH) 
 }
 
-
 void loop() {
     client.loop();
 }
-
 
 void callback(char* topic, byte* payload, unsigned int length) {
  
