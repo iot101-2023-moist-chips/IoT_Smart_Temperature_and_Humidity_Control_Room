@@ -17,6 +17,8 @@ humidity = 0
 dust = 0
 Temp_Out = 0
 
+count = 0
+
 def on_connect(client, userdata, flags, rc):
     print("Connected with RC : " + str(rc))
     client.subscribe(topic1)
@@ -25,6 +27,7 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe(topic4)
 
 def on_message(client, userdata, msg):
+    global count
     global received_temperature, received_humidity, received_dust, received_Temp_Out, temperature, humidity, dust, Temp_Out
     
     if topic1 == msg.topic:
@@ -54,24 +57,48 @@ def on_message(client, userdata, msg):
         received_humidity = False
         received_dust = False
         received_Temp_Out = False
+        
+    print("Temperature :", temperature)
+    print("Humidity :", humidity)
+    print("Dust :", dust)
+    print("Temp_Out : ", Temp_Out)
     
-    time.sleep(3)
+    # 미세먼지 나쁨
+    if dust > 80:
+        client.publish("id/ikarosoo/linear/cmd", "off")
+        count = 0
+        print("미세먼지 나빠")
 
-    if temperature > 30:
-      client.publish("id/ikarosoo/linear/cmd", "on")        #창문 조절
-      client.publish("id/ikarosoo/humidiffer/cmd", "off")
-      print(0)
-    else :
-      client.publish("id/ikarosoo/linear/cmd", "off")
-      print(1)
-      print("DUST : ", dust)
-      if humidity > 50:
-        client.publish("id/ikarosoo/humidiffer/cmd", "off")
-        print(2)
-      else :
-        client.publish("id/ikarosoo/humidiffer/cmd", "on")
-        print(3)
-
+    # 미세먼지 좋음
+    else:
+        print("미세먼지 좋아")
+        # 습도가 높다
+        if humidity > 50:
+            client.publish("id/ikarosoo/linear/cmd", "off")
+            client.publish("id/ikarosoo/humidiffer/cmd", "on")
+            count = 0
+            print("습도 높아")
+        # 습도가 낮다
+        else:
+            if abs(temperature - Temp_Out) > 8:
+                client.publish("id/ikarosoo/linear/cmd", "off")
+                count = 0
+                print("너무 온도 차이 커")
+            else:
+                if count >= 5 and count < 10:
+                    client.publish("id/ikarosoo/linear/cmd", "off")
+                    time.sleep(2)
+                    count += 1
+                    print("닫기")
+                elif count == 10:
+                    time.sleep(2)
+                    count = 0
+                    print("리셋")
+                else:
+                    client.publish("id/ikarosoo/linear/cmd", "on")
+                    time.sleep(2)
+                    count += 1
+                    print("오픈")
 
 client = mqtt.Client()
 client.connect(server, 1883, 60)
