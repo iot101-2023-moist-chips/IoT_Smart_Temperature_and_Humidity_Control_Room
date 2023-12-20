@@ -43,11 +43,6 @@ void setup() {
 
 void loop() {
     client.loop();
-
-    unsigned long currentMillis = millis();
-    if(currentMillis - lastPublished >= interval) {
-        lastPublished = currentMillis;
-    }
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
