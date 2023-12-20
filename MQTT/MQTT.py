@@ -72,13 +72,13 @@ def on_message(client, userdata, msg):
     # 미세먼지 좋음
     else:
         print("미세먼지 좋아")
-        # 습도가 높다
-        if humidity > 50:
+        # 방 습도가 낮다
+        if humidity < 50:
             client.publish("id/ikarosoo/linear/cmd", "off")
             client.publish("id/ikarosoo/humidiffer/cmd", "on")
             count = 0
-            print("습도 높아")
-        # 습도가 낮다
+            print("습도 낮아")
+        # 방 습도가 높다
         else:
             if abs(temperature - Temp_Out) > 8:
                 client.publish("id/ikarosoo/linear/cmd", "off")
