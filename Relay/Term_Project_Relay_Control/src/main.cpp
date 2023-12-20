@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
  
-#define             RELAY 13
+#define             RELAY 15
 const char*         ssid ="갤럭시탭";
 const char*         password = "54958735";
 const char*         mqttServer = "44.216.90.150";
