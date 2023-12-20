@@ -13,7 +13,6 @@ unsigned long       lastPublished = - interval;
 WiFiClient espClient;
 PubSubClient client(espClient);
 void callback(char* topic, byte* payload, unsigned int length);
-void pubStatus();
 
 void setup() {
     Serial.begin(115200);
@@ -48,18 +47,7 @@ void loop() {
     unsigned long currentMillis = millis();
     if(currentMillis - lastPublished >= interval) {
         lastPublished = currentMillis;
-        pubStatus();
     }
-}
-
-void pubStatus() {
-    char buf[10];
-    if (digitalRead(RELAY) == HIGH) {
-        sprintf(buf, "on");
-    } else {
-        sprintf(buf, "off");
-    }
-    client.publish("id/ikarosoo/humidiffer/cmd", buf);
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -78,5 +66,4 @@ void callback(char* topic, byte* payload, unsigned int length) {
             digitalWrite(RELAY, LOW);
         }
     }
-    pubStatus();
 }
