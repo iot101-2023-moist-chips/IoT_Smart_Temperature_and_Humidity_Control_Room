@@ -22,7 +22,6 @@ unsigned long       lastPublished = - pubInterval;
 WiFiClient espClient;
 PubSubClient client(espClient);
 void readDHT22();
-void callback(char* topic, byte* payload, unsigned int length);
 
 void setup() {
     Serial.begin(115200);
@@ -39,7 +38,6 @@ void setup() {
     }
     mqttServer = cfg["mqttServer"];
     client.setServer(mqttServer, mqttPort);
-    client.setCallback(callback);
     while (!client.connected()) {
         Serial.println("Connecting to MQTT...");
  
@@ -51,7 +49,6 @@ void setup() {
         }
     }
     dht.setup(14, DHTesp::DHT22); // Connect DHT sensor to GPIO 14
-    client.subscribe("id/yourname/sensor/cmd");
 }
 
 void loop() {
@@ -78,21 +75,5 @@ void readDHT22() {
 
         humidity = dht.getHumidity();              // Read humidity (percent)
         temperature = dht.getTemperature();        // Read temperature as Fahrenheit
-    }
-}
-
-void callback(char* topic, byte* payload, unsigned int length) {
- 
-    char msgBuffer[20];
-    if(!strcmp(topic, "id/yourname/relay/cmd")) {
-        int i;
-        for(i = 0; i < (int)length; i++) {
-            msgBuffer[i] = payload[i];
-        } 
-        msgBuffer[i] = '\0';
-        Serial.printf("\n%s -> %s", topic, msgBuffer);
-        if(!strcmp(msgBuffer, "status")) {
-            lastPublished -= pubInterval;
-        }
     }
 }
