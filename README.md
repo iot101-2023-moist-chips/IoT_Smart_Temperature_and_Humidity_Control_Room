@@ -17,6 +17,10 @@ https://github.com/iot101-2023-moist-chips/Term_Project/assets/101611831/309ef5b
 
 
 
+https://github.com/user-attachments/assets/e1172d57-ac1a-439d-affe-1862c8b95c19
+
+
+
 https://github.com/iot101-2023-moist-chips/Term_Project/assets/101611831/bd43ad1d-cbed-48a7-81ca-c40317e442c9
 
 
